@@ -1,8 +1,231 @@
-sudo apt install tomcat9
-wget https://github.com/spring-projects/spring-petclinic/releases/download/v2.5.0/spring-petclinic-2.5.0.war
-sudo mv spring-petclinic-2.5.0.war /var/lib/tomcat9/webapps/petclinic.war
-sudo systemctl restart tomcat9
+create a file and add the below code with the name MemoryTroubleshootingApp.java
 
+```java
+import java.util.*;
+import java.lang.management.*;
+
+public class MemoryTroubleshootingApp {
+    // Static collection to simulate memory leak
+    private static final List<byte[]> memoryLeakList = new ArrayList<>();
+    
+    public static void main(String[] args) throws InterruptedException {
+        // Start memory monitoring thread
+        startMemoryMonitoring();
+        
+        // Demonstrate different memory scenarios
+        memoryLeakSimulation();
+        inefficientCollectionUsage();
+        largeObjectAllocation();
+        
+        // Keep application running
+        Thread.sleep(Long.MAX_VALUE);
+    }
+    
+    // Memory Leak Simulation
+    private static void memoryLeakSimulation() {
+        System.out.println("Starting Memory Leak Simulation...");
+        
+        new Thread(() -> {
+            while (true) {
+                // Continuously add large byte arrays without releasing
+                byte[] leakyBytes = new byte[1024 * 1024]; // 1MB allocation
+                memoryLeakList.add(leakyBytes);
+                
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    
+    // Inefficient Collection Usage
+    private static void inefficientCollectionUsage() {
+        System.out.println("Demonstrating Inefficient Collection Usage...");
+        
+        new Thread(() -> {
+            List<String> largeList = new ArrayList<>();
+            
+            for (int i = 0; i < 1_000_000; i++) {
+                largeList.add("Item " + i);
+                
+                // Simulate long-running process preventing GC
+                if (i % 100_000 == 0) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+    
+    // Large Object Allocation
+    private static void largeObjectAllocation() {
+        System.out.println("Large Object Allocation Simulation...");
+        
+        new Thread(() -> {
+            while (true) {
+                // Allocate large objects to stress memory
+                byte[][] largeObjectArray = new byte[1000][1024 * 1024]; // 1GB total
+                
+                try {
+                    Thread.sleep(5000); // Wait before next allocation
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    
+    // Continuous Memory Monitoring
+    private static void startMemoryMonitoring() {
+        new Thread(() -> {
+            MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+            
+            while (true) {
+                MemoryUsage heapUsage = memoryBean.getHeapMemoryUsage();
+                
+                System.out.println("--- Memory Status ---");
+                System.out.println("Used Memory: " + 
+                    bytesToMegabytes(heapUsage.getUsed()) + " MB");
+                System.out.println("Committed Memory: " + 
+                    bytesToMegabytes(heapUsage.getCommitted()) + " MB");
+                System.out.println("Max Memory: " + 
+                    bytesToMegabytes(heapUsage.getMax()) + " MB");
+                System.out.println("--------------------");
+                
+                try {
+                    Thread.sleep(5000); // Monitor every 5 seconds
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    
+    // Helper method to convert bytes to megabytes
+    private static long bytesToMegabytes(long bytes) {
+        return bytes / (1024 * 1024);
+    }
+}
+```
+
+Save file as MemoryTroubleshootingApp.java
+Compile: ```bash javac MemoryTroubleshootingApp.java ```
+Run: ```bash java MemoryTroubleshootingApp ```
+
+
+
+3. Tools for Diagnosis
+A. JConsole (Built-in Java Monitoring)
+
+Open terminal/command prompt
+Run:
+```bash
+jconsole
+```
+
+Select the MemoryTroubleshootingApp process
+Monitor:
+
+Heap Memory Usage
+Thread Activity
+CPU Usage
+
+
+
+B. VisualVM Installation
+
+Download from: https://visualvm.github.io/
+Install and launch
+Connect to running Java process
+Analyze:
+
+Memory Heap
+CPU Profiling
+Thread Dumps
+
+
+
+C. Heap Dump Analysis
+
+When OutOfMemoryError occurs, a heapdump.hprof is generated
+Analyze with:
+
+Eclipse Memory Analyzer
+JProfiler
+Yourkit Profiler
+
+
+
+4. Memory Issue Indicators
+
+Increasing memory consumption
+Frequent garbage collection
+Long GC pause times
+OutOfMemoryError
+
+5. Debugging Techniques
+A. GC Log Analysis
+
+Examine gc.log file
+Look for:
+
+Garbage Collection frequency
+Collection duration
+Memory before/after collection
+
+
+
+B. Heap Dump Interpretation
+
+Open heapdump in Memory Analyzer
+Identify:
+
+Largest Objects
+Memory Retention
+Potential Leaks
+
+
+
+6. Common Memory Issues in Code
+
+Memory Leak: Objects not released
+Inefficient Collections: Large, unmanaged lists
+Resource Hogging: Continuous object allocation
+
+7. Recommended JVM Flags
+bashCopy# Memory Allocation
+-Xms256m    # Initial Heap Size
+-Xmx512m    # Maximum Heap Size
+
+# Garbage Collection
+-XX:+UseG1GC  # Recommended Garbage Collector
+-XX:MaxGCPauseMillis=200  # Max GC Pause Time
+
+# Logging
+-XX:+PrintGCDetails
+-XX:+PrintGCTimeStamps
+
+
+
+or 
+
+Run the application:
+bash```
+java -Xmx512m \
+     -XX:+PrintGCDetails \
+     -XX:+PrintGCTimeStamps \
+     -XX:+PrintGCDateStamps \
+     -Xloggc:gc.log \
+     -XX:+HeapDumpOnOutOfMemoryError \
+     -XX:HeapDumpPath=./heapdump.hprof \
+     MemoryTroubleshootingApp
+
+```
 
 
 
