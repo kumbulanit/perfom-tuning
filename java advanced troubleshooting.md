@@ -1,3 +1,28 @@
+
+
+
+
+
+
+### **Java Application Lab Exercise: Troubleshooting GC, Memory Leaks, and Java Heap Issues**
+
+
+
+### **Overview:**
+Participants will:
+1. Set up and run a Java web application that is deliberately misconfigured to trigger memory issues.
+2. Use monitoring tools (like VisualVM, jConsole, or JMC) to diagnose the problem.
+3. Analyze GC logs, memory usage, and heap dumps.
+4. Apply fixes and optimizations to resolve the issues.
+
+### **Objectives:**
+- Understand how GC works in Java and identify different types of collectors.
+- Identify memory leaks and inefficient memory usage.
+- Learn how to read GC logs and interpret heap usage.
+- Diagnose and fix memory issues related to Java heap.
+- Explore how different GC algorithms affect performance.
+
+---
 create a file and add the below code with the name MemoryTroubleshootingApp.java
 
 ```java
@@ -119,177 +144,12 @@ Run: ``` java MemoryTroubleshootingApp ```
 
 
 
-3. Tools for Diagnosis
-A. JConsole (Built-in Java Monitoring)
-
-Open terminal/command prompt
-Run:
-```
-jconsole
-```
-
-Select the MemoryTroubleshootingApp process
-Monitor:
-
-Heap Memory Usage
-Thread Activity
-CPU Usage
-
-
-
-B. VisualVM Installation
-
-Download from: https://visualvm.github.io/
-Install and launch
-Connect to running Java process
-Analyze:
-
-Memory Heap
-CPU Profiling
-Thread Dumps
-
-
-
-C. Heap Dump Analysis
-
-When OutOfMemoryError occurs, a heapdump.hprof is generated
-Analyze with:
-
-Eclipse Memory Analyzer
-JProfiler
-Yourkit Profiler
-
-
-
-4. Memory Issue Indicators
-
-Increasing memory consumption
-Frequent garbage collection
-Long GC pause times
-OutOfMemoryError
-
-5. Debugging Techniques
-A. GC Log Analysis
-
-Examine gc.log file
-Look for:
-
-Garbage Collection frequency
-Collection duration
-Memory before/after collection
-
-
-
-B. Heap Dump Interpretation
-
-Open heapdump in Memory Analyzer
-Identify:
-
-Largest Objects
-Memory Retention
-Potential Leaks
-
-
-
-6. Common Memory Issues in Code
-
-Memory Leak: Objects not released
-Inefficient Collections: Large, unmanaged lists
-Resource Hogging: Continuous object allocation
-
-7. Recommended JVM Flags
-# Memory Allocation
--Xms256m    # Initial Heap Size
--Xmx512m    # Maximum Heap Size
-
-# Garbage Collection
--XX:+UseG1GC  # Recommended Garbage Collector
--XX:MaxGCPauseMillis=200  # Max GC Pause Time
-
-# Logging
--XX:+PrintGCDetails
--XX:+PrintGCTimeStamps
-
-
-
-or 
-
-Run the application:
-
-```
-java -Xmx512m \
-     -XX:+PrintGCDetails \
-     -XX:+PrintGCTimeStamps \
-     -XX:+PrintGCDateStamps \
-     -Xloggc:gc.log \
-     -XX:+HeapDumpOnOutOfMemoryError \
-     -XX:HeapDumpPath=./heapdump.hprof \
-     MemoryTroubleshootingApp
-```
-
-
-
-
-
-### **Java Application Lab Exercise: Troubleshooting GC, Memory Leaks, and Java Heap Issues**
-
-
-
-### **Overview:**
-Participants will:
-1. Set up and run a Java web application that is deliberately misconfigured to trigger memory issues.
-2. Use monitoring tools (like VisualVM, jConsole, or JMC) to diagnose the problem.
-3. Analyze GC logs, memory usage, and heap dumps.
-4. Apply fixes and optimizations to resolve the issues.
-
-### **Objectives:**
-- Understand how GC works in Java and identify different types of collectors.
-- Identify memory leaks and inefficient memory usage.
-- Learn how to read GC logs and interpret heap usage.
-- Diagnose and fix memory issues related to Java heap.
-- Explore how different GC algorithms affect performance.
-
----
-
-### **Step-by-Step Instructions:**
-
-#### **1. Setting up the Environment:**
-
-**Requirements:**
-- Ubuntu 22.04
-- Java Development Kit (JDK) version 11 or higher
-- Apache Maven
-- JVisualVM, JConsole, or JDK Mission Control (JMC)
-- Java Flight Recorder (JFR) for advanced analysis (comes with JDK 11+)
-- Sample Java Application (Spring Boot-based)
-
-**Download the Sample Java Application:**
-- Clone the pre-configured Spring Boot application that includes performance bottlenecks and memory issues:
-  
-  ```bash
-  git clone https://github.com/example/sample-memory-leak-app.git
-  cd sample-memory-leak-app
-  ```
-
-**Install Dependencies and Build the Application:**
-- Ensure you have Java and Maven installed. You can install them using:
-
-  ```bash
-  sudo apt update
-  sudo apt install openjdk-17-jdk maven
-  ```
-
-- Build the project:
-
-  ```bash
-  mvn clean install
-  ```
 
 **Run the Application:**
 - Start the Java application with specific JVM options that enable GC logging:
 
   ```bash
-  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.log -jar target/sample-memory-leak-app.jar
+  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.log -jar target/MemoryTroubleshootingApp.jar
   ```
 
 **Explanation of JVM Options:**
@@ -345,19 +205,19 @@ Participants will:
 1. **Serial GC** (single-threaded, suitable for smaller apps):
 
    ```bash
-   java -Xms512m -Xmx512m -XX:+UseSerialGC -XX:+PrintGCDetails -Xloggc:gc-serial.log -jar target/sample-memory-leak-app.jar
+   java -Xms512m -Xmx512m -XX:+UseSerialGC -XX:+PrintGCDetails -Xloggc:gc-serial.log -jar target/MemoryTroubleshootingApp.jar
    ```
 
 2. **Parallel GC** (multi-threaded for high throughput):
 
    ```bash
-   java -Xms512m -Xmx512m -XX:+UseParallelGC -XX:+PrintGCDetails -Xloggc:gc-parallel.log -jar target/sample-memory-leak-app.jar
+   java -Xms512m -Xmx512m -XX:+UseParallelGC -XX:+PrintGCDetails -Xloggc:gc-parallel.log -jar target/MemoryTroubleshootingApp.jar
    ```
 
 3. **CMS (Concurrent Mark-Sweep) GC** (low pause time):
 
    ```bash
-   java -Xms512m -Xmx512m -XX:+UseConcMarkSweepGC -XX:+PrintGCDetails -Xloggc:gc-cms.log -jar target/sample-memory-leak-app.jar
+   java -Xms512m -Xmx512m -XX:+UseConcMarkSweepGC -XX:+PrintGCDetails -Xloggc:gc-cms.log -jar target/MemoryTroubleshootingApp.jar
    ```
 
 - Compare the GC logs for each algorithm. Determine which one performs better for this application.
@@ -370,7 +230,7 @@ Participants will:
 - Start the application with JFR enabled:
 
   ```bash
-  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=app-recording.jfr -jar target/sample-memory-leak-app.jar
+  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=app-recording.jfr -jar target/MemoryTroubleshootingApp.jar
   ```
 
 - Open the `.jfr` file in JDK Mission Control (JMC) for detailed profiling.
