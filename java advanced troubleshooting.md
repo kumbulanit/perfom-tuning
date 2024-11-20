@@ -215,7 +215,8 @@ bashCopy# Memory Allocation
 or 
 
 Run the application:
-bash```
+
+```
 java -Xmx512m \
      -XX:+PrintGCDetails \
      -XX:+PrintGCTimeStamps \
@@ -224,7 +225,6 @@ java -Xmx512m \
      -XX:+HeapDumpOnOutOfMemoryError \
      -XX:HeapDumpPath=./heapdump.hprof \
      MemoryTroubleshootingApp
-
 ```
 
 
