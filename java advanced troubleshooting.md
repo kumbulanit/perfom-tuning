@@ -124,7 +124,7 @@ A. JConsole (Built-in Java Monitoring)
 
 Open terminal/command prompt
 Run:
-```bash
+```
 jconsole
 ```
 
@@ -198,7 +198,7 @@ Inefficient Collections: Large, unmanaged lists
 Resource Hogging: Continuous object allocation
 
 7. Recommended JVM Flags
-bashCopy# Memory Allocation
+# Memory Allocation
 -Xms256m    # Initial Heap Size
 -Xmx512m    # Maximum Heap Size
 
