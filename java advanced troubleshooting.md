@@ -1,3 +1,13 @@
+sudo apt install tomcat9
+wget https://github.com/spring-projects/spring-petclinic/releases/download/v2.5.0/spring-petclinic-2.5.0.war
+sudo mv spring-petclinic-2.5.0.war /var/lib/tomcat9/webapps/petclinic.war
+sudo systemctl restart tomcat9
+
+
+
+
+
+
 ### **Java Application Lab Exercise: Troubleshooting GC, Memory Leaks, and Java Heap Issues**
 
 
