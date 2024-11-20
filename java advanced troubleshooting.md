@@ -114,8 +114,8 @@ public class MemoryTroubleshootingApp {
 ```
 
 Save file as MemoryTroubleshootingApp.java
-Compile: ```bash javac MemoryTroubleshootingApp.java ```
-Run: ```bash java MemoryTroubleshootingApp ```
+Compile: ``` javac MemoryTroubleshootingApp.java ```
+Run: ``` java MemoryTroubleshootingApp ```
 
 
 
