@@ -149,7 +149,7 @@ Run: ``` java MemoryTroubleshootingApp ```
 - Start the Java application with specific JVM options that enable GC logging:
 
   ```bash
-  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.log -jar target/MemoryTroubleshootingApp.jar
+  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.log MemoryTroubleshootingApp
   ```
 
 **Explanation of JVM Options:**
