@@ -149,7 +149,7 @@ Run: ``` java MemoryTroubleshootingApp ```
 - Start the Java application with specific JVM options that enable GC logging:
 
   ```bash
-  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.log MemoryTroubleshootingApp
+  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+PrintGCDetails  -Xloggc:gc.log MemoryTroubleshootingApp
   ```
 
 **Explanation of JVM Options:**
@@ -205,19 +205,19 @@ Run: ``` java MemoryTroubleshootingApp ```
 1. **Serial GC** (single-threaded, suitable for smaller apps):
 
    ```bash
-   java -Xms512m -Xmx512m -XX:+UseSerialGC -XX:+PrintGCDetails -Xloggc:gc-serial.log -jar target/MemoryTroubleshootingApp.jar
+   java -Xms512m -Xmx512m -XX:+UseSerialGC -XX:+PrintGCDetails -Xloggc:gc-serial.log -MemoryTroubleshootingApp
    ```
 
 2. **Parallel GC** (multi-threaded for high throughput):
 
    ```bash
-   java -Xms512m -Xmx512m -XX:+UseParallelGC -XX:+PrintGCDetails -Xloggc:gc-parallel.log -jar target/MemoryTroubleshootingApp.jar
+   java -Xms512m -Xmx512m -XX:+UseParallelGC -XX:+PrintGCDetails -Xloggc:gc-parallel.log -MemoryTroubleshootingApp
    ```
 
 3. **CMS (Concurrent Mark-Sweep) GC** (low pause time):
 
    ```bash
-   java -Xms512m -Xmx512m -XX:+UseConcMarkSweepGC -XX:+PrintGCDetails -Xloggc:gc-cms.log -jar target/MemoryTroubleshootingApp.jar
+   java -Xms512m -Xmx512m -XX:+UseConcMarkSweepGC -XX:+PrintGCDetails -Xloggc:gc-cms.log -MemoryTroubleshootingApp
    ```
 
 - Compare the GC logs for each algorithm. Determine which one performs better for this application.
@@ -230,7 +230,7 @@ Run: ``` java MemoryTroubleshootingApp ```
 - Start the application with JFR enabled:
 
   ```bash
-  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=app-recording.jfr -jar target/MemoryTroubleshootingApp.jar
+  java -Xms512m -Xmx512m -XX:+UseG1GC -XX:+FlightRecorder -XX:StartFlightRecording=duration=10m,filename=app-recording.jfr -MemoryTroubleshootingApp
   ```
 
 - Open the `.jfr` file in JDK Mission Control (JMC) for detailed profiling.
