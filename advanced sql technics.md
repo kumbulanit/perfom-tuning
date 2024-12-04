@@ -578,3 +578,50 @@ Let’s **populate the database** with a significant amount of data to simulate 
    ```
 
 By following these steps, you will get a deeper understanding of advanced SQL techniques, their application in PostgreSQL, and how to maintain optimal database performance.
+
+
+
+'''sql
+-- Inserting 10 customers
+INSERT INTO customers (first_name, last_name, email, created_at)
+VALUES
+('John', 'Doe', 'john.doe@example.com', NOW()),
+('Jane', 'Smith', 'jane.smith@example.com', NOW()),
+('Michael', 'Johnson', 'michael.johnson@example.com', NOW()),
+('Emily', 'Davis', 'emily.davis@example.com', NOW()),
+('Chris', 'Brown', 'chris.brown@example.com', NOW()),
+('Jessica', 'Taylor', 'jessica.taylor@example.com', NOW()),
+('David', 'Miller', 'david.miller@example.com', NOW()),
+('Sarah', 'Wilson', 'sarah.wilson@example.com', NOW()),
+('Daniel', 'Moore', 'daniel.moore@example.com', NOW()),
+('Laura', 'Anderson', 'laura.anderson@example.com', NOW());
+
+-- Inserting sample products
+INSERT INTO products (product_name, category, price, stock)
+VALUES
+('Laptop', 'Electronics', 999.99, 10),
+('Smartphone', 'Electronics', 499.99, 15),
+('Headphones', 'Accessories', 199.99, 25),
+('Coffee Maker', 'Home Appliances', 79.99, 20),
+('Bluetooth Speaker', 'Accessories', 59.99, 30);
+
+-- Inserting orders with random dates between one year ago and today
+-- Random dates generated using the `NOW()` function and `INTERVAL` subtraction
+-- Sample order quantities and total price
+
+INSERT INTO orders (customer_id, product_id, order_date, quantity, total_price)
+VALUES
+(1, 1, NOW() - INTERVAL '6 months', 2, 1999.98),
+(1, 2, NOW() - INTERVAL '1 year', 1, 499.99),
+(2, 3, NOW() - INTERVAL '9 months', 3, 599.97),
+(2, 4, NOW() - INTERVAL '1 month', 1, 79.99),
+(3, 1, NOW() - INTERVAL '10 months', 1, 999.99),
+(3, 5, NOW() - INTERVAL '3 months', 2, 119.98),
+(4, 2, NOW() - INTERVAL '4 months', 1, 499.99),
+(5, 3, NOW() - INTERVAL '2 weeks', 2, 399.98),
+(6, 4, NOW() - INTERVAL '5 months', 1, 79.99),
+(7, 5, NOW() - INTERVAL '7 months', 1, 59.99),
+(8, 1, NOW() - INTERVAL '1 year', 1, 999.99),
+(9, 2, NOW() - INTERVAL '6 months', 2, 999.98),
+(10, 3, NOW() - INTERVAL '3 months', 1, 199.99);
+'''
