@@ -42,29 +42,33 @@ sudo apt install postgresql postgresql-contrib
 
    ```sql
    CREATE TABLE customers (
-       customer_id SERIAL PRIMARY KEY,
-       first_name VARCHAR(50) NOT NULL,
-       last_name VARCHAR(50) NOT NULL,
-       email VARCHAR(100) UNIQUE NOT NULL,
-       created_at TIMESTAMP DEFAULT NOW()
-   );
+    customer_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
 
-   CREATE TABLE products (
-       product_id SERIAL PRIMARY KEY,
-       product_name VARCHAR(100) NOT NULL,
-       category VARCHAR(50),
-       price NUMERIC(10, 2),
-       stock INT DEFAULT 0
-   );
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    category VARCHAR(50),
+    price NUMERIC(10, 2),
+    stock INT DEFAULT 0
+);
 
-   CREATE TABLE orders (
-       order_id SERIAL PRIMARY KEY,
-       customer_id INT REFERENCES customers(customer_id),
-       product_id INT REFERENCES products(product_id),
-       order_date TIMESTAMP DEFAULT NOW(),
-       quantity INT NOT NULL,
-       total_price NUMERIC(10, 2),
-       INDEX (order_date)
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(customer_id),
+    product_id INT REFERENCES products(product_id),
+    order_date TIMESTAMP DEFAULT NOW(),
+    quantity INT NOT NULL,
+    total_price NUMERIC(10, 2)
+);
+
+-- Create the index on `order_date` separately
+CREATE INDEX idx_order_date ON orders(order_date);
+
    );
    ```
 
