@@ -39,9 +39,8 @@ sudo apt install postgresql postgresql-contrib
    ```
 
 4. **Create a normalized schema** with multiple tables. Start with an `orders` table that links to `customers` and `products` tables:
-
-   ```sql
-   CREATE TABLE customers (
+```sql
+CREATE TABLE customers (
     customer_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
@@ -68,10 +67,7 @@ CREATE TABLE orders (
 
 -- Create the index on `order_date` separately
 CREATE INDEX idx_order_date ON orders(order_date);
-
-   );
-   ```
-
+```
 5. **Insert sample data** into the tables:
 
    ```sql
