@@ -625,3 +625,14 @@ VALUES
 (9, 2, NOW() - INTERVAL '6 months', 2, 999.98),
 (10, 3, NOW() - INTERVAL '3 months', 1, 199.99);
 ```
+
+```sql
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(customer_id),
+    product_id INT REFERENCES products(product_id),
+    order_date TIMESTAMP NOT NULL,
+    quantity INT NOT NULL,
+    total_price NUMERIC(10, 2)
+) PARTITION BY RANGE (order_date);
+```
