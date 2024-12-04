@@ -627,14 +627,15 @@ VALUES
 ```
 
 ```sql
--- Create the partitioned orders table
+-- Create the partitioned orders table with the primary key including order_date
 CREATE TABLE orders_new (
-    order_id SERIAL PRIMARY KEY,
+    order_id SERIAL,
     customer_id INT REFERENCES customers(customer_id),
     product_id INT REFERENCES products(product_id),
     order_date TIMESTAMP NOT NULL,
     quantity INT NOT NULL,
-    total_price NUMERIC(10, 2)
+    total_price NUMERIC(10, 2),
+    PRIMARY KEY (order_id, order_date)  -- Include order_date in the primary key
 ) PARTITION BY RANGE (order_date);
 
 ```
