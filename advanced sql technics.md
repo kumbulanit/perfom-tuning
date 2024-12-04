@@ -627,7 +627,8 @@ VALUES
 ```
 
 ```sql
-CREATE TABLE orders (
+-- Create the partitioned orders table
+CREATE TABLE orders_new (
     order_id SERIAL PRIMARY KEY,
     customer_id INT REFERENCES customers(customer_id),
     product_id INT REFERENCES products(product_id),
@@ -635,4 +636,5 @@ CREATE TABLE orders (
     quantity INT NOT NULL,
     total_price NUMERIC(10, 2)
 ) PARTITION BY RANGE (order_date);
+
 ```
