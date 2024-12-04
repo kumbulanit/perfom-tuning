@@ -581,7 +581,7 @@ By following these steps, you will get a deeper understanding of advanced SQL te
 
 
 
-'''sql
+```sql
 -- Inserting 10 customers
 INSERT INTO customers (first_name, last_name, email, created_at)
 VALUES
@@ -624,4 +624,4 @@ VALUES
 (8, 1, NOW() - INTERVAL '1 year', 1, 999.99),
 (9, 2, NOW() - INTERVAL '6 months', 2, 999.98),
 (10, 3, NOW() - INTERVAL '3 months', 1, 199.99);
-'''
+```
