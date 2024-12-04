@@ -40,6 +40,7 @@ sudo apt install postgresql postgresql-contrib
 
 4. **Create a normalized schema** with multiple tables. Start with an `orders` table that links to `customers` and `products` tables:
 ```sql
+-- Create the customers table
 CREATE TABLE customers (
     customer_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -48,6 +49,7 @@ CREATE TABLE customers (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Create the products table
 CREATE TABLE products (
     product_id SERIAL PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL,
@@ -56,42 +58,51 @@ CREATE TABLE products (
     stock INT DEFAULT 0
 );
 
-CREATE TABLE orders_new (
+-- Create the partitioned orders table
+CREATE TABLE orders (
     order_id SERIAL,
-    customer_id INT REFERENCES customers(customer_id),
-    product_id INT REFERENCES products(product_id),
-    order_date TIMESTAMP NOT NULL,
-    quantity INT NOT NULL,
-    total_price NUMERIC(10, 2),
-    PRIMARY KEY (order_id, order_date)  -- Include order_date in the primary key
+    customer_id INT NOT NULL REFERENCES customers(customer_id),
+    product_id INT NOT NULL REFERENCES products(product_id),
+    order_date DATE NOT NULL,
+    quantity INT NOT NULL CHECK (quantity > 0),
+    total_price NUMERIC(10, 2) NOT NULL CHECK (total_price >= 0),
+    PRIMARY KEY (order_id, order_date)
 ) PARTITION BY RANGE (order_date);
 
--- Create the index on `order_date` separately
-CREATE INDEX idx_order_date ON orders(order_date);
-```
-5. **Insert sample data** into the tables:
+-- Create partitions for the orders table
+CREATE TABLE orders_2023
+PARTITION OF orders
+FOR VALUES FROM ('2023-01-01') TO ('2024-01-01');
 
-   ```sql
-   INSERT INTO customers (first_name, last_name, email) VALUES
-   ('John', 'Doe', 'john.doe@example.com'),
-   ('Jane', 'Smith', 'jane.smith@example.com'),
-   ('Paul', 'Adams', 'paul.adams@example.com'),
-   ('Laura', 'White', 'laura.white@example.com');
+CREATE TABLE orders_2024
+PARTITION OF orders
+FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
 
-   INSERT INTO products (product_name, category, price, stock) VALUES
-   ('Laptop', 'Electronics', 1200.50, 10),
-   ('Smartphone', 'Electronics', 800.00, 20),
-   ('Desk Chair', 'Furniture', 150.00, 15),
-   ('Coffee Table', 'Furniture', 120.00, 5);
+-- Insert sample data into customers table
+INSERT INTO customers (first_name, last_name, email) VALUES
+('John', 'Doe', 'john.doe@example.com'),
+('Jane', 'Smith', 'jane.smith@example.com'),
+('Paul', 'Adams', 'paul.adams@example.com'),
+('Laura', 'White', 'laura.white@example.com');
 
-   INSERT INTO orders_new (customer_id, product_id, order_date, quantity, total_price)
-VALUES
-(1, 1, NOW() - INTERVAL '6 months', 2, 1999.98),
-(1, 2, NOW() - INTERVAL '1 year', 1, 499.99),
-(2, 3, NOW() - INTERVAL '9 months', 3, 599.97),
-(2, 4, NOW() - INTERVAL '1 month', 1, 79.99),
-(3, 1, NOW() - INTERVAL '10 months', 1, 999.99),
-(3, 5, NOW() - INTERVAL '3 months', 2, 119.98),
+-- Insert sample data into products table
+INSERT INTO products (product_name, category, price, stock) VALUES
+('Laptop', 'Electronics', 1200.50, 10),
+('Smartphone', 'Electronics', 800.00, 20),
+('Desk Chair', 'Furniture', 150.00, 15),
+('Coffee Table', 'Furniture', 120.00, 5);
+
+-- Insert sample data into orders table
+INSERT INTO orders (customer_id, product_id, order_date, quantity, total_price) VALUES
+(1, 1, '2023-06-15', 2, 2401.00),
+(1, 2, '2023-03-10', 1, 800.00),
+(2, 3, '2024-02-22', 1, 150.00),
+(3, 4, '2023-11-05', 1, 120.00),
+(4, 1, '2024-01-15', 1, 1200.50);
+
+-- Create an index on the order_date column for faster querying
+CREATE INDEX idx_order_date ON orders (order_date);
+
    ```
 
 #### **Step 2: Query Optimization with Advanced Indexing**
@@ -134,7 +145,10 @@ VALUES
 2. **Verify partitioning** by running a query:
 
    ```sql
-   SELECT * FROM orders WHERE order_date BETWEEN '2023-01-01' AND '2023-12-31';
+   SELECT inhrelid::regclass AS partition_name
+FROM pg_inherits
+WHERE inhparent = 'orders'::regclass;
+
    ```
 
 3. **Use `pg_partition_tree`** to verify the partition setup:
