@@ -56,14 +56,15 @@ CREATE TABLE products (
     stock INT DEFAULT 0
 );
 
-CREATE TABLE orders (
-    order_id SERIAL PRIMARY KEY,
+CREATE TABLE orders_new (
+    order_id SERIAL,
     customer_id INT REFERENCES customers(customer_id),
     product_id INT REFERENCES products(product_id),
-    order_date TIMESTAMP DEFAULT NOW(),
+    order_date TIMESTAMP NOT NULL,
     quantity INT NOT NULL,
-    total_price NUMERIC(10, 2)
-);
+    total_price NUMERIC(10, 2),
+    PRIMARY KEY (order_id, order_date)  -- Include order_date in the primary key
+) PARTITION BY RANGE (order_date);
 
 -- Create the index on `order_date` separately
 CREATE INDEX idx_order_date ON orders(order_date);
@@ -83,11 +84,14 @@ CREATE INDEX idx_order_date ON orders(order_date);
    ('Desk Chair', 'Furniture', 150.00, 15),
    ('Coffee Table', 'Furniture', 120.00, 5);
 
-   INSERT INTO orders (customer_id, product_id, quantity, total_price) VALUES
-   (1, 1, 1, 1200.50),
-   (2, 2, 2, 1600.00),
-   (3, 4, 1, 120.00),
-   (4, 3, 3, 450.00);
+   INSERT INTO orders_new (customer_id, product_id, order_date, quantity, total_price)
+VALUES
+(1, 1, NOW() - INTERVAL '6 months', 2, 1999.98),
+(1, 2, NOW() - INTERVAL '1 year', 1, 499.99),
+(2, 3, NOW() - INTERVAL '9 months', 3, 599.97),
+(2, 4, NOW() - INTERVAL '1 month', 1, 79.99),
+(3, 1, NOW() - INTERVAL '10 months', 1, 999.99),
+(3, 5, NOW() - INTERVAL '3 months', 2, 119.98),
    ```
 
 #### **Step 2: Query Optimization with Advanced Indexing**
@@ -627,15 +631,15 @@ VALUES
 ```
 
 ```sql
--- Create the partitioned orders table with the primary key including order_date
-CREATE TABLE orders_new (
-    order_id SERIAL,
-    customer_id INT REFERENCES customers(customer_id),
-    product_id INT REFERENCES products(product_id),
-    order_date TIMESTAMP NOT NULL,
-    quantity INT NOT NULL,
-    total_price NUMERIC(10, 2),
-    PRIMARY KEY (order_id, order_date)  -- Include order_date in the primary key
-) PARTITION BY RANGE (order_date);
+DO $$ 
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') 
+    LOOP
+        EXECUTE 'DROP TABLE IF EXISTS public."' || r.tablename || '" CASCADE';
+    END LOOP;
+END $$;
+
 
 ```
