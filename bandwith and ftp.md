@@ -38,6 +38,7 @@ Participants will learn to:
    chroot_local_user=YES
    pasv_min_port=40000
    pasv_max_port=50000
+   allow_writeable_chroot=YES
    ```
    
    **Explanation**:

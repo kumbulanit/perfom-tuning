@@ -33,14 +33,14 @@ To create a practical working example exercise that involves **Web Server/App Se
 3. **Download and Install Apache Tomcat 9**:
 
    ```bash
-   wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.73/bin/apache-tomcat-9.0.73.tar.gz
+   wget https://dlcdn.apache.org/tomcat/tomcat-11/v11.0.1/bin/apache-tomcat-11.0.1.tar.gz
    ```
 
 4. **Extract the Tomcat files**:
 
    ```bash
-   tar -xvf apache-tomcat-9.0.73.tar.gz
-   sudo mv apache-tomcat-9.0.73 /opt/tomcat
+   tar -xvf apache-tomcat-11.0.1.tar.gz
+   sudo mv apache-tomcat-11.0.1 /opt/tomcat
    ```
 
 5. **Set environment variables** for Tomcat:
